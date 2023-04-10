@@ -1,0 +1,439 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-site-verification" content="B3UpNAzKeG7ioT5yzNsbyQBGv9aXiBRHYC1f50Veals" />
+    <meta name="yandex-verification" content="0c436ead839464da" />
+    <meta name="msvalidate.01" content="796C5390EDBEB82180F4A5850D7F73C8" />
+    <link rel="stylesheet" href={% static "style.css" %}>
+    <link rel="stylesheet" href={% static "movie.css" %}>
+    {% comment %} <link rel="stylesheet" href=static "/run/media/nathan/ff7aca2a-7bd9-4a7a-a953-13c98179331b/programming/heroku/weekly_exploration_projects/movies/static/style.css" />
+    <link rel="stylesheet" href=static "/run/media/nathan/ff7aca2a-7bd9-4a7a-a953-13c98179331b/programming/heroku/weekly_exploration_projects/movies/static/movie.css" /> {% endcomment %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <title>Watch {{what}}: 
+    {% if series_data.original_name %}
+      {{series_data.original_name}} | season: {{season_number}} | episode: {{episode_number}} 
+    {% elif series_data.original_title %}
+      {{series_data.original_title}}
+    {% endif %} online free with apvid.herokuapp.com
+  </title>
+  <link rel="shortcut icon" href="{% static 'favicon.png' %}">
+  
+    <script>
+      function setIframeUrl(source, url){
+        console.log()
+        console.log("Setting iframe url: ", url);
+        const iframe_data = document.getElementById('iframe');
+        iframe_data.innerHTML = ''; // clear the iframe
+        
+        server_icons = document.getElementsByClassName('server');
+        
+        for (let server_icon of server_icons){
+          server_icon.classList = 'server'; // reset all server icon's color
+        }
+        
+        // set selected icon's color
+        source_icon = document.getElementById(source);
+        source_icon.classList = "server bg-secondary";  // set selected server icon's color
+        
+        iframe_data.src = url;  // set the iframe's url
+      }
+
+    </script>
+
+</head>
+<body style="background-color: #22254b;">
+  <header>
+        <div class="series-movie">
+            <a href="https://google.com">series</a>
+            <a href="https://google.com" rel="noopener">movie</a><br>
+            {% comment %} <a href="javascript:void(0);" id=key onclick="func(0)">foo</a><br> {% endcomment %}
+        </div>
+        <form action="{% url 'search' %}" method="get" id="form">
+            <input type="text" placeholder="Search" id="search" class="search" name="search">
+        </form>
+    </header>
+    
+    <div id="tags"></div>
+      <div id="myNav" class="overlay">
+
+        <!-- Button to close the overlay navigation -->
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      
+        <!-- Overlay content -->
+        <div class="overlay-content" id="overlay-content"></div>
+        
+        <a href="javascript:void(0)" class="arrow left-arrow" id="left-arrow">&#8656;</a> 
+        
+        <a href="javascript:void(0)" class="arrow right-arrow" id="right-arrow" >&#8658;</a>
+
+      </div>
+    </div>
+
+      <div class="player" id="player" style="height:100vh;width:100%;" class="bg-secondary mb-5">
+        {% comment %} player :: iframe for movie is added here dymnamically {% endcomment %}
+        {% if source_index == 3 or source_index == '3' %}
+          {% comment %} because format of first source is different {% endcomment %}
+          
+          {% comment %} sandboxed iframe {% endcomment %}
+          {% comment %} <iframe id="iframe" src={{movie_url.results.0.url}} width="100%" height="100%" frameborder="0" sandbox="allow-downloads allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation"></iframe> {% endcomment %}
+          <iframe id="iframe" src={{movie_url.results.0.url}} width="100%" height="100%" frameborder="0"></iframe>
+        {% else %}
+          {% comment %} <iframe id="iframe" src={{url}} width="100%" height="100%" frameborder="0" sandbox="allow-downloads allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation"></iframe> {% endcomment %}
+          <iframe id="iframe" src={{movie_url}} width="100%" height="100%" frameborder="0"></iframe>
+        {% endif %}
+
+        {% comment %} server selection {% endcomment %}
+        <ul class="nav">
+          {% for result in movie_url.results %}
+            {% if forloop.counter == 1 %}
+              <li class="server bg-secondary" id="{{result.server}}" onclick="setIframeUrl('{{result.server}}', '{{result.url}}')" style="color:black;">{{result.server}}</li>
+            {% else %}
+              <li class="server bg-white" id="{{result.server}}" onclick="setIframeUrl('{{result.server}}', '{{result.url}}')" style="color:black;">{{result.server}}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+      
+      <script>
+        window.scroll(180,180)
+        console.log(" Playing ")
+      </script>
+
+
+
+
+    <br><br><br><br><br>
+  <div class="container mt-5">
+    {% comment %} only show seasons and episodes for series {% endcomment %}
+    {% if stream == "series" %}
+      <!-- Seasons and Episodes -->
+        <div class="row justify-content-start">
+
+          <div class="col-12 col-sm-4">
+            <div class="container">
+              <div class="row">
+                <div class="col m-2">
+                  
+                  {% comment %} Seasons data {% endcomment %}
+                  {% comment %} SEASONS {% endcomment %}
+                  <div class="dropdown " id="season_dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                      Season {{ season_number }} 
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      {% comment %} # // seasons {% endcomment %}
+                      {% with ''|center:number_of_seasons as range %}
+                        {% for _ in range %}
+                          <li><a class="dropdown-item" href="/series/?tmdb_id={{tmdb_id}}&season={{forloop.counter}}&episode=1&source={{source_index}}" air_date=> Season {{ forloop.counter }}</a></li>
+                        {% endfor %}
+                      {% endwith %}
+                      </ul>
+                  </div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-8 col-sm-12 m-2">
+                  
+                  {% comment %} Source data {% endcomment %}
+                  {% comment %} SOURCES {% endcomment %}
+                  <div class="dropdown m-2 mt-5" id="season_dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                      Source {{ source_index }}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li><a class="dropdown-item" onclick="changeSource(1)"> Source 1 </a></li>
+                      <li><a class="dropdown-item" onClick="changeSource(2)"> Source 2 </a></li>
+                      <li><a class="dropdown-item" onClick="changeSource(3)"> Source 3 </a></li>
+                    </ul>
+                  </div>
+
+                </div>
+                <div class="col-4 alert alert-success"> Please change the source if the video is not playing </div>
+              </div>
+            </div>
+            
+            
+           
+            
+          </div>
+          <div class="col-8">
+            Episodes
+            <ul class="nav">
+              {% comment %} # // episodes {% endcomment %}
+              {% for episode in season_data.episodes %}
+                <li class="nav-item m-2">
+                  eps: {{episode_number}} || {{episode.episode_number}}
+                  {% if episode.episode_number == episode_number %}
+                  <a class="nav-link btn btn-sm btn-dark active episode_button" id="episode_{{episode.episode_number}}" data-number="1" data-s-number="1" air_date = {{ episode.air_date|safe }} href="/series/?tmdb_id={{ episode.show_id }}&season={{season_data.season_number}}&episode={{ episode.episode_number }}&source={{source_index}}" title="The Heirs of the Dragon">
+                  {% else %}
+                  <a class="nav-link btn btn-sm btn-secondary active episode_button" id="episode_{{episode.episode_number}}" data-number="1" data-s-number="1" air_date = {{ episode.air_date|safe }}  href="/series/?tmdb_id={{ episode.show_id }}&season={{season_data.season_number}}&episode={{ episode.episode_number }}&source={{source_index}}" title="The Heirs of the Dragon">
+                  {% endif %}
+                    <strong>Episode {{ episode.episode_number|safe }} : </strong>{{ episode.name }}
+                  </a>
+                </li>
+              {% endfor %}
+              {% comment %} to color current eqisode tab black {% endcomment %}
+              <img src onerror="console.log('color');colorCurrentEpisode({{episode_number}})">
+            </ul>
+          </div>
+        </div>
+    {% else %}
+
+    
+    <div class = "row">
+      {% comment %} <!-- To select movie source --> {% endcomment %}
+      <div class="col-4">
+        {% comment %} Sources {% endcomment %}
+        <div class="dropdown m-2" id="season_dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            Source {{ source_index }}
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li><a class="dropdown-item" onclick="changeSource(1)"> Source 1</a></li>
+            <li><a class="dropdown-item" onClick="changeSource(2)"> Source 2</a></li>
+            <li><a class="dropdown-item" onClick="changeSource(3)"> Source 3</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-4 alert alert-success"> Please change the source if the video is not playing </div>
+    </div>
+  </div>
+  {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} <!-- Description Section --> {% endcomment %}
+<div class="container-sm bg-dark" style="color: white;">
+
+	<div class="row m-3">
+		<div class="col-12 col-lg-6">
+	
+			<div class="dp-i-c-poster">
+				<div class="film-poster mb-2">
+					<img class="film-poster-img" src="https://image.tmdb.org/t/p/w500{{ series_data.poster_path|safe }}" title="{{ series_data.name|safe }}" alt={{ series_data.name|safe }}>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+    </div>  
+			
+    
+    
+    
+    <div class="col-6" style="color:white;">
+      {% if what == 'movie' %}
+        <h2>{{ series_data.title|safe }}</h2>
+      {% else %}
+        <h2>{{ series_data.original_name|safe }}</h2>
+      {% endif %}
+      <div class="dp-i-stats">
+        <span class="item mr-1">
+          <button data-toggle="modal" data-target="#modaltrailer" title="Trailer" class="btn btn-sm btn-trailer">
+            <i class="fas fa-video mr-2"></i>Trailer
+          </button>
+        </span>
+        <span class="item mr-1">
+          <button class="btn btn-sm btn-quality" style="color:white;">
+            <strong>HD</strong>
+          </button>
+        </span>
+        <span class="item mr-2"><button class="btn btn-sm btn-radius btn-warning btn-imdb">
+          TMDB: {{ series_data.vote_average|safe }}</button>
+        </span>
+        <span class="item float-right ml-3" id="favorite-state">
+          <a href="javascript:;" data-id="84837" class="btn btn-block btn-radius btn-sm btn-favorite btn-secondary">
+            <i class="fa fa-plus mr-2"></i>Add Favorite
+          </a>
+        </span>
+      </div>
+      
+      <div class="description">
+        {{ series_data.overview|safe }}
+      </div>
+      
+      <div class="elements">
+        <div class="row">
+          <div class="col-xl-5 col-lg-6 col-md-8 col-sm-12 mt-4">
+            <div class="row-line">
+              <span class="type">
+                <strong>Released: </strong>
+              </span> {{ series_data.seasons.season_number.air_data|safe }} {{series_data.release_date|safe}}
+            </div>
+            
+            <div class="row-line">
+              <span class="type"><strong>Genre: </strong>
+                {% for genre in series_data.genres %}
+                  <a href="/genre/{{genre.name|safe}}" title="{{genre.name|safe}}">{{genre.name|safe}}</a>,
+                {% endfor %}
+              </span>
+            </div>
+          
+            <div class="row-line">
+              <span class="type"><strong>Casts: </strong>
+                {% for cast in series_data.credits.cast %}
+                  <a href="/person/{{cast.id|safe}}" title="{{cast.name|safe}}">{{cast.name|safe}}</a>,
+                {% endfor %}
+                {% for creator in series_data.created_by %}
+                  <a href="https://image.tmdb.org/t/p/w500{{creator.profile_path|safe}}" title={{creator.name|safe}}>{{creator.name|safe}}</a>,
+                {% endfor %}
+              </span>
+            </div>
+          </div>
+          <div class="col-xl-6 col-lg-6 col-md-4 col-sm-12 mt-4">
+            <div class="row-line">
+              <span class="type">
+                <strong>Duration: </strong>
+              </span> 
+              {% if what == 'movie'%}
+                {{series_data.runtime}}
+              {%else%}
+                {{ series_data.last_episode_to_air.runtime }}
+              {%endif%}
+
+            </div>
+            <div class="row-line">
+              <span class="type"><strong>Country: </strong>
+                {% if what == 'movie'%}
+                  <a href="/country/{{series_data.production_countries.0.name|safe}}" title="{{series_data.production_countries.0.name|safe}}">{{ series_data.origin_country.0|safe}}</a><a href="/country/united-states-of-america-129" title="United States of America">{{series_data.production_countries.0.name|safe}}</a>
+                {% else %}
+                  <a href="/country/{{ series_data.origin_country.0|safe}}" title={{ series_data.origin_country.0|safe}}>{{ series_data.origin_country.0|safe}}</a>
+              {% endif %}
+              </span>
+            </div>
+            <div class="row-line">
+              <span class="type"><strong>Production: </strong>
+                
+                {% for production in series_data.production_companies %}
+                  <a href="/production/{{production.id|safe}}" title="{{production.name|safe}}">{{production.name|safe}}</a>,
+                {% endfor %}
+              </span>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+      <div class="clearfix"></div>			
+    </div>
+    
+  </div>
+  <div class="row" >
+    <div class="col">
+      <ul class="nav" style="justify-content: center;">
+        {% if what == 'movie'%}
+            <li class="server bg-white" style="color:black;"> Watch {{ series_data.title|safe }} Online Free</li>
+            <li class="server bg-white" style="color:black;"> {{ series_data.title|safe }} Online Free </li>
+            <li class="server bg-white" style="color:black;"> Where to watch {{ series_data.title|safe }} </li>
+            <li class="server bg-white" style="color:black;"> {{ series_data.title|safe }} Movie Free Online </li>
+            <li class="server bg-white" style="color:black;"> {{ series_data.title|safe }} Free Online </li>
+        {% else %}
+            <li class="server bg-white" style="color:black;"> Watch {{ series_data.name|safe }} Online Free</li>
+            <li class="server bg-white" style="color:black;"> {{ series_data.name|safe }} Online Free </li>
+            <li class="server bg-white" style="color:black;"> Where to watch {{ series_data.name|safe }} </li>
+            <li class="server bg-white" style="color:black;"> {{ series_data.name|safe }} Movie Free Online </li>
+            <li class="server bg-white" style="color:black;"> {{ series_data.name|safe }} Free Online </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<br><h2 class="cat-heading"> Similar {{ what }}:</h2><br>
+{% comment %} Similar movies/series {% endcomment %}
+<main id="main"> 
+  {% for movie in similar.results %}
+     
+  <div class="movie">
+        <img src="https://image.tmdb.org/t/p/w500{{movie.poster_path|safe}}": "http://via.placeholder.com/1080x1580" }" alt="{{movie.title|safe}}">
+
+            <div class="movie-info">
+              {% comment %} {{movie}}   {% endcomment %}
+              <h3>
+                {% if movie.original_name %}
+                  {{movie.original_name}}
+                {% elif movie.original_title %}
+                  {{movie.original_title}}
+                {% endif %}
+              </h3>
+                <span class="" onLoad="getColor({{movie.vote_average}})">{{movie.vote_average}}</span>
+            </div>
+
+            <div class="overview">
+
+              <h3>Overview <{{movie.release_date}} {{movie.first_air_date}}> </h3>
+                {{movie.overview|safe|truncatewords:"70"}}
+                <br/>
+                
+                {% if movie.media_type == "movie" or category == "Latest Movies" or category == "Popular Movies" or category == "Upcomming" or what == "movie" %}
+                  {% comment %} For Movies {% endcomment %}
+                  <button class="know-more" id="{{movie.id}}" onClick = "'movie',showTrailer({{movie.id}}, '{{movie.original_title}}')">Know More</button>  
+                  <button class="know-more" id="view{{movie.id}}" onclick="redirectMovie({{movie.id}})">Watch: Mov</button>
+                {% elif movie.media_type == "tv" or category == "Popular Series" or category == "Latest Series" or what == "series" %}
+                  {% comment %} For TV {% endcomment %}  
+                  <button class="know-more" id="{{movie.id}}" onClick = "'series',showTrailer('series',{{movie.id}}, '{{movie.original_name}}')">Know More</button>  
+                  <button class="know-more" id="view{{movie.id}}" onclick="redirectSeries({{movie.id}})">Watch:ser.</button>
+                {% else %}
+                  {% comment %} Neither Movies nor TV whet is it? {% endcomment %}
+                  <button class="know-more" id="{{movie.id}}" onClick = "'series',showTrailer('series',{{movie.id}}, '{{movie.original_name}}')">Know More</button>  
+                  <button class="know-more" id="view{{movie.id}}" onclick="redirectSeries({{movie.id}})">Watch: ser </button>
+                {% endif %}
+            </div>
+      </div>
+      {% endfor %}
+    </main>
+
+
+      
+    <div class="pagination">
+        <div class="page" id="prev">Previous Page</div>
+        <div class="current" id="current">1</div>
+        <div class="page" id="next">Next Page</div>
+
+    </div>
+
+    <script>
+      function hideEpisodesNotReleased2(){
+        let episodes = document.getElementsByClassName('episode_button');
+        for (episode of episodes){
+          console.log()
+          if( (episode.getAttribute('air_date') == 'None') || (Date.parse(episode.getAttribute('air_date')) > Date.now())){
+            let release_info = document.createElement('strong');
+            release_info.innerHTML = '<br>Release_Date : ' + episode.getAttribute('air_date');
+            //episode.textContent = episode.textContent + release_info;
+            episode.appendChild(release_info);
+            episode.href = "javascript: void(0)"
+            
+        } 
+
+
+        }}
+      
+      hideEpisodesNotReleased2();
+    </script>
+    <script src={% static "script.js" %}></script>
+
+       
+  </body>
+</html>
