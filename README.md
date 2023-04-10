@@ -1,4 +1,6 @@
-## A django app to search and play movies online
+# A django app to search and play movies online
+
+![alt text](static/image.png "Title")
 
 <br>
 
