@@ -30,22 +30,28 @@
 
 ## Running code
     
-        * Clone the repo: `git clone https://github.com/Aananda-giri/movies_and_videos.git`
+* Clone the repo: `git clone https://github.com/Aananda-giri/movies_and_videos.git`
     
-        * Create a virtual environment and activate it
-            * `virtualenv venv`
-            * `source venv/bin/activate`
+* Create a virtual environment and activate it
+   *  `virtualenv venv`
+   *  `source venv/bin/activate`
     
-        * Install requirements
-            * `pip install -r requirements.txt`
-    
-        * get the api key from (TMDB)[https://developers.themoviedb.org/3/getting-started/introduction]
-            * insert the api key in `movies/views.py` as `API_KEY = << TMDB_API_KEY >>`
 
-        * Django secret key
-            * generate a secret key using
-            * `python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`
+* Install requirements
+    * `pip install -r requirements.txt`
 
-            * insert the key generated to  `videos_project/settings.py`
-                `SECRET_KEY = << SECRET_KEY_GENERATED >>`
-        * Open the browser and go to http://
+
+* get the api key from (TMDB)[https://developers.themoviedb.org/3/getting-started/introduction]
+    * insert the api key in `movies/views.py` as:
+        * `API_KEY = << TMDB_API_KEY >>`
+
+
+* Django secret key
+    * generate a secret key using
+        * `python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`
+
+    * insert the key generated to  `videos_project/settings.py` as:
+        * `SECRET_KEY = << SECRET_KEY_GENERATED >>`
+
+* Run Server
+    * `python manage.py runserver`
