@@ -1,0 +1,7 @@
+test.py
+videos_project/offline_*.py
+.vscode/*
+offline*
+*[Tt]est*
+**/[Tt]est*
+README_TEST.md
