@@ -35,6 +35,7 @@ header{
 
 .search:focus{
     outline:0;
+    color:white;
     background-color: var(--primary-color);
 }
 
