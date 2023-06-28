@@ -346,6 +346,12 @@ function redirectSeries(tmdb_id){
   window.location.href = BASE_URL + '/series?tmdb_id=' + tmdb_id + '&season=1&episode=1';
 }
 
+function redirectTo(sub_url){
+  console.log('redirectTo: ', sub_url);
+  window.location.href = BASE_URL + sub_url;
+}
+
+
 function changeSource(source){
   window.location.href = window.location.href + '&source=' + source;
 }
