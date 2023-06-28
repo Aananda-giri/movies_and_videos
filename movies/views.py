@@ -6,7 +6,8 @@ from django.core import serializers
 from urllib3 import HTTPResponse
 import json, os
 # json.  
-API_KEY = os.environ.get('TMDB_API_KEY');
+# API_KEY = os.environ.get('TMDB_API_KEY');
+API_KEY = "1cf50e6248dc270629e802686245c2c8"
 BASE_URL = 'https://api.themoviedb.org/3';
 API_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc&'+API_KEY;
 IMG_URL = 'https://image.tmdb.org/t/p/w500';
@@ -163,6 +164,35 @@ def trailer(request):
         return JsonResponse(res)
     else:
         return JsonResponse({'error!' : 'require tmdb_id!! no \'tmdb_id\' provided!! '}, safe=False)
+
+def list_movies(request):
+    # https://api.themoviedb.org/3/tv/top_rated?api_key=<<TMDB_API_KEY>>&language=en-US&page=1?adult=true
+    
+    # trending_all = requests.get(BASE_URL + '/trending/all/week?api_key=' + API_KEY).json()['results']
+    
+    # print(f'trending_all: \n\n {trending_all}')
+    # trending_all = trending_all['results']
+    # print(trending_all)
+
+    trending_movies = requests.get(BASE_URL + '/trending/movie/week?api_key=' + API_KEY).json()['results']
+    popular_movie = requests.get(BASE_URL + '/movie/popular?api_key=' + API_KEY + '&language=en-US&page=1').json()['results']
+    
+    latest_movie = requests.get(BASE_URL + '/movie/now_playing?api_key=' + API_KEY + '&language=en-US&page=1').json()['results']
+    upcomming_movies = requests.get(BASE_URL + '/movie/upcoming?api_key=' + API_KEY + '&language=en-US&page=1').json()['results']
+
+    context = {'categories':['trending_movies', 'popular_movies', 'latest_movies', 'upcomming_movies'], 'values':{'Trending Movies': trending_movies, 'Popular Movies': popular_movie, 'Latest Movies': latest_movie, 'Comming Soon' : upcomming_movies}}
+    return render(request, 'movies/home.html', context)
+'''
+trending movies/series
+upcomming series
+'''
+def list_series(request):
+    popular_series = requests.get(BASE_URL + '/tv/popular?api_key=' + API_KEY + '&language=en-US&page=1').json()['results']
+    latest_series = requests.get(BASE_URL + '/tv/on_the_air?api_key=' + API_KEY + '&language=en-US&page=1').json()['results']
+    upcomming_series = requests.get(BASE_URL + '/tv/airing_today?api_key=' + API_KEY + '&language=en-US&page=1').json()['results']
+    trending_series = requests.get(BASE_URL + '/trending/tv/week?api_key=' + API_KEY).json()['results']
+    context = {'categories':['trending_series', 'popular_series', 'latest_series', 'upcomming_series'], 'values':{'Trending Series': trending_series, 'Popular Series': popular_series, 'Latest Series' : latest_series, 'Comming Soon':upcomming_series}}
+    return render(request, 'movies/home.html', context)
 
 def country(request):
     # todo : movie by country
