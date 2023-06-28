@@ -48,8 +48,15 @@ $(document).on('click', 'a', function(e){
     <header>
         <div class="series-movie bg-white">
             {% comment %} <button id="myButton">Click Here</button> {% endcomment %}
-            <a href="https://google.com" class="nav_link">series</a>
-            <a href="https://google.com" class="nav_link" rel="noopener">movie</a><br>
+            <div class="series-movie">
+              <div class="left-side" onclick="redirectTo('/series');">
+                <a href="/series/" class="link-no-underline">series</a>
+              </div>  
+              <div class="right-side" onclick="redirectTo('/movies');">
+                <a href="/movies/" class="link-no-underline">movies</a><br>
+              </div>
+                {% comment %} <a href="javascript:void(0);" id=key onclick="func(0)">foo</a><br> {% endcomment %}
+            </div>
             {% comment %} <a href="javascript:void(0);" id=key onclick="func(0)">foo</a><br> {% endcomment %}
         </div>
         <form action="{% url 'search' %}" method="get" id="form">
@@ -109,10 +116,9 @@ $(document).on('click', 'a', function(e){
                             <button class="know-more" id="{{movie.id}}" onClick = "'series',showTrailer('series',{{movie.id}}, '{{movie.original_name}}')">Know More</button>  
                             <button class="know-more" id="view{{movie.id}}" onclick="redirectSeries({{movie.id}})">Watch: ser. </button>
                           {% else %}
-                            {% comment %} Neither Movies nor TV whet is it? {% endcomment %}
-                            {{movie}}
+                            {% comment %} Up-comming Movies or TV does not have media_type {% endcomment %}
                             <button class="know-more" id="{{movie.id}}" onClick = "'series',showTrailer('series',{{movie.id}}, '{{movie.original_name}}')">Know More</button>  
-                  <button class="know-more" id="view{{movie.id}}" onclick="redirectSeries({{movie.id}})">Watch: ser </button>
+                  
                           {% endif %}
                       </div>
                 </div>

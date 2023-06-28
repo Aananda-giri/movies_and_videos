@@ -48,8 +48,12 @@
 <body style="background-color: #22254b;">
   <header>
         <div class="series-movie">
-            <a href="https://google.com">series</a>
-            <a href="https://google.com" rel="noopener">movie</a><br>
+          <div class="left-side" onclick="redirectTo('/scripts')">
+            <a href="/series/">series</a>
+          </div>  
+          <div class="right-side" onclick="redirectTo('/movies')"> redirect to /movies on click
+            <a href="/movies/" rel="noopener">movie</a><br>
+          </div>
             {% comment %} <a href="javascript:void(0);" id=key onclick="func(0)">foo</a><br> {% endcomment %}
         </div>
         <form action="{% url 'search' %}" method="get" id="form">
@@ -383,7 +387,14 @@
             <div class="overview">
 
               <h3>Overview <{{movie.release_date}} {{movie.first_air_date}}> </h3>
-                {{movie.overview|safe|truncatewords:"70"}}
+              <!-- if movie.overview !='' or movie.overview!=None -->
+              {% if movie.overview %}
+                {% if movie.overview|length > 70 %}
+                  {{movie.overview|safe|truncatewords:"70"}}
+                {% else %}
+                  {{movie.overview|safe}}
+                {% endif %}
+              {% endif %}
                 <br/>
                 
                 {% if movie.media_type == "movie" or category == "Latest Movies" or category == "Popular Movies" or category == "Upcomming" or what == "movie" %}
@@ -392,11 +403,11 @@
                   <button class="know-more" id="view{{movie.id}}" onclick="redirectMovie({{movie.id}})">Watch: Mov</button>
                 {% elif movie.media_type == "tv" or category == "Popular Series" or category == "Latest Series" or what == "series" %}
                   {% comment %} For TV {% endcomment %}  
-                  <button class="know-more" id="{{movie.id}}" onClick = "'series',showTrailer('series',{{movie.id}}, '{{movie.original_name}}')">Know More</button>  
+                  <button class="know-more" id="{{movie.id}}" onClick = "'series',showTrailer('series',{{movie.id}}, '{{movie.original_name}}')">Know More Series</button>  
                   <button class="know-more" id="view{{movie.id}}" onclick="redirectSeries({{movie.id}})">Watch:ser.</button>
                 {% else %}
-                  {% comment %} Neither Movies nor TV whet is it? {% endcomment %}
-                  <button class="know-more" id="{{movie.id}}" onClick = "'series',showTrailer('series',{{movie.id}}, '{{movie.original_name}}')">Know More</button>  
+                  {% comment %} Up-comming Movies or TV does not have media_type {% endcomment %}
+                  <button class="know-more" id="{{movie.id}}" onClick = "'series',showTrailer('series',{{movie.id}}, '{{movie.original_name}}')">Know More Else</button>  
                   <button class="know-more" id="view{{movie.id}}" onclick="redirectSeries({{movie.id}})">Watch: ser </button>
                 {% endif %}
             </div>
