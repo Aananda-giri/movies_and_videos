@@ -25,6 +25,7 @@ header{
 
 .search{
     background-color: white;
+    font-weight: bold;  /* make text bold*/
     border: 2px solid var(--primary-color);
     padding:0.5rem 1rem;
     border-radius: 50px;
