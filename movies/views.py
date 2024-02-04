@@ -129,9 +129,9 @@ def movie(request):
             
         else:
             # "https://seapi.link/?type=tmdb&id=634649&max_results=1"
-            movie_url = requests.get(f"https://seapi.link/?type=tmdb&id={tmdb_id}&max_results=1").json()
+            movie_url = f"https://seapi.link/?type=tmdb&id={tmdb_id}&max_results=1"
             
-            
+        print(f'\n\n {movie_url}')
 
 
         # https://api.themoviedb.org/3/movie/1726?api_key=<<TMDB_API_KEY>>&language=en-US
