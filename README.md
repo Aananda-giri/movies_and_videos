@@ -1,6 +1,6 @@
 # A django app to search and play movies online
 
-![alt text](static/image.png "Title")
+![home-page](static/image.png "Title")
 
 <br>
 
@@ -41,7 +41,7 @@
     * `pip install -r requirements.txt`
 
 
-* get the api key from (TMDB)[https://developers.themoviedb.org/3/getting-started/introduction]
+* get the api key from [TMDB](https://developers.themoviedb.org/3/getting-started/introduction)
     * insert the api key in `movies/views.py` as:
         * `API_KEY = << TMDB_API_KEY >>`
 
